@@ -26,7 +26,7 @@ export default class Game extends Component {
   }
   generateRandomCards() {
     let cards = [];
-    const colors = ['blue', 'red', 'yellow'];
+    const colors = ['rgba(52, 152, 219, 1.0)', 'rgba(231, 76, 60, 1.0)', 'rgba(241, 196, 15, 1.0)'];
     const shapes = ['circle', 'rectangle', 'triangle'];
     const fills = ['full', 'striped', 'empty'];
 
@@ -70,7 +70,8 @@ export default class Game extends Component {
 const styles = StyleSheet.create({
   cardContainer: {
     flexDirection:'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    marginBottom: 100
   }
 });
 

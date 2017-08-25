@@ -4,23 +4,14 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight
+  TouchableOpacity
 } from 'react-native';
 import Svg,{
     Circle,
-    Ellipse,
-    G,
-    LinearGradient,
-    RadialGradient,
     Line,
-    Path,
     Polygon,
     Polyline,
-    Rect,
-    Symbol,
-    Use,
-    Defs,
-    Stop
+    Rect
 } from 'react-native-svg';
 
 import * as cardImages from '../../utils/cardImages';
@@ -29,7 +20,8 @@ export default class Card extends Component {
   constructor() {
     super();
     this.state = {
-      card: {}
+      card: {},
+      selected: false
     };
   }
   componentDidMount() {
@@ -48,13 +40,24 @@ export default class Card extends Component {
         return cardImages.triangle(card)
     }
   }
-  onCardClick(card) {
+  onCardClick = (card) => {
+    console.log(this.state.selected)
     console.log(card.color + ' ' + card.shape + ' ' + card.fill)
+    this.setState({
+      selected: !this.state.selected
+    }, () => {
+      console.log(this.state.selected)
+    })
   }
+  cardStyle = () => {
+    console.log('Changing card style based on ' + this.state.selected)
+    return !this.state.selected ? [styles.row, styles.rowUnselected] : [styles.rowSelected, styles.row]
+  }
+
   render() {
     return (
-      <TouchableHighlight onPress={() => this.onCardClick(this.state.card)}>
-        <View style={styles.row}>
+      <TouchableOpacity activeOpacity={0.5} onPress={() => this.onCardClick(this.state.card)}>
+        <View style={this.cardStyle()}>
           <Svg
             height="110"
             width="110"
@@ -62,7 +65,7 @@ export default class Card extends Component {
           {this.generateCardImage(this.state.card)}
           </Svg>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 }
@@ -72,11 +75,16 @@ const styles = StyleSheet.create({
     width:110,
     height: 110,
     margin: 5,
-    backgroundColor: '#fff',
     justifyContent: 'center',
     borderRadius: 1,
     borderWidth: 1,
-    borderColor: '#D3D3D3'
+    borderColor: '#415A77'
+  },
+  rowUnselected: {
+    backgroundColor: '#1B263B'
+  },
+  rowSelected: {
+    backgroundColor: '#415A77'
   },
   rowText: {
     textAlign: 'center'

@@ -12,8 +12,8 @@ export default class ReactSet extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>
-          Welcome to React Native!
+        <Text style={styles.title}>
+          React Native Set
         </Text>
         <Game />
       </View>
@@ -23,7 +23,15 @@ export default class ReactSet extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#0D1B2A'
+  },
+  title: {
+    marginLeft: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 10,
+    color: '#fff'
   }
 });
 

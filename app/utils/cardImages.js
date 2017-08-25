@@ -16,11 +16,15 @@ import Svg,{
     Stop
 } from 'react-native-svg';
 
+function getFill(card) {
+  return (card.fill == 'full') ? card.color : (card.fill =='striped') ? card.color.slice(0, -4) + '0.2)' : 'none'
+}
+
 export function triangle(card) {
   return (
     <Polygon
       points="55,10 100,100 10,100"
-      fill={card.fill == 'full' ? card.color : 'white'}
+      fill={getFill(card)}
       strokeWidth={card.fill !== 'full' ? 4 : 0}
       stroke={card.color}
     />
@@ -33,7 +37,7 @@ export function rectangle(card) {
       y="12.5"
       width="85"
       height="85"
-      fill={card.fill == 'full' ? card.color : 'white'}
+      fill={getFill(card)}
       strokeWidth={card.fill !== 'full' ? 4 : 0}
       stroke={card.color}
     />
@@ -45,7 +49,7 @@ export function circle(card) {
       cx="55"
       cy="55"
       r="45"
-      fill={card.fill == 'full' ? card.color : 'white'}
+      fill={getFill(card)}
       strokeWidth={card.fill !== 'full' ? 4 : 0}
       stroke={card.color}
     />
