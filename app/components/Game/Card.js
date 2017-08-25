@@ -23,6 +23,8 @@ import Svg,{
     Stop
 } from 'react-native-svg';
 
+import * as cardImages from '../../utils/cardImages';
+
 export default class Card extends Component {
   constructor() {
     super();
@@ -39,37 +41,11 @@ export default class Card extends Component {
   generateCardImage(card) {
     switch(card.shape) {
       case 'circle':
-        return (
-          <Circle
-            cx="55"
-            cy="55"
-            r="45"
-            fill={card.fill == 'full' ? card.color : 'white'}
-            strokeWidth={card.fill !== 'full' ? 4 : 0}
-            stroke={card.color}
-          />
-        )
+        return cardImages.circle(card)
       case 'rectangle':
-        return (
-          <Rect
-            x="12.5"
-            y="12.5"
-            width="85"
-            height="85"
-            fill={card.fill == 'full' ? card.color : 'white'}
-            strokeWidth={card.fill !== 'full' ? 4 : 0}
-            stroke={card.color}
-          />
-        )
+        return cardImages.rectangle(card)
       case 'triangle':
-        return (
-          <Polygon
-            points="55,10 100,100 10,100"
-            fill={card.fill == 'full' ? card.color : 'white'}
-            strokeWidth={card.fill !== 'full' ? 4 : 0}
-            stroke={card.color}
-          />
-        )
+        return cardImages.triangle(card)
     }
   }
   onCardClick(card) {
