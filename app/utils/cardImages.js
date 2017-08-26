@@ -28,7 +28,7 @@ function getColorCode(color) {
 }
 
 function getFill(card) {
-  return (card.fill == 'full') ? getColorCode(card.color) : (card.fill =='striped') ? getColorCode(card.color).slice(0, -4) + '0.2)' : 'none'
+  return (card.fill == 'full') ? getColorCode(card.color) : (card.fill =='striped') ? getColorCode(card.color).slice(0, -4) + '0.35)' : 'none'
 }
 
 export function triangle(card) {

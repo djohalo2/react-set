@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as combinations from './combinations'
 
 export function generateCards(amount) {
   let cards = []
@@ -15,6 +16,17 @@ export function generateCards(amount) {
     cards.push(card)
   }
   return cards
+}
+
+export function getAllSets(cards) {
+  const allCombinations = combinations.k_combinations([0, 1, 2, 3, 4, 5, 6, 7, 8], 3)
+  let sets = []
+  for(let possibleSet in allCombinations){
+    if(isSet(cards, allCombinations[possibleSet])) {
+      sets.push(allCombinations[possibleSet])
+    }
+  }
+  return sets
 }
 
 export function isSet(stateCards, stateSelectedCards) {
