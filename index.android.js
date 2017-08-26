@@ -13,7 +13,7 @@ export default class ReactSet extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
-          React Native Set
+          REACT NATIVE SET
         </Text>
         <Game />
       </View>
@@ -26,12 +26,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#0D1B2A'
   },
   title: {
-    marginLeft: 5,
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 10,
     marginBottom: 10,
-    color: '#fff'
+    color: '#fff',
+    textAlign: 'center'
   }
 });
 

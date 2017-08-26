@@ -20,18 +20,28 @@ export default class Card extends Component {
   constructor() {
     super();
     this.state = {
-      card: {},
+      shape: '',
+      color: '',
+      fill: '',
+      cardIndex: 0,
       selected: false
     };
   }
   componentDidMount() {
     this.setState({
-      card: this.props.card
+      shape: this.props.shape,
+      color: this.props.color,
+      fill: this.props.fill,
+      cardIndex: this.props.cardIndex
     })
-    console.log(this.state.card)
   }
-  generateCardImage(card) {
-    switch(card.shape) {
+  generateCardImage() {
+    let card = {
+      shape: this.state.shape,
+      color: this.state.color,
+      fill: this.state.fill
+    }
+    switch(this.state.shape) {
       case 'circle':
         return cardImages.circle(card)
       case 'rectangle':
@@ -40,29 +50,28 @@ export default class Card extends Component {
         return cardImages.triangle(card)
     }
   }
-  onCardClick = (card) => {
-    console.log(this.state.selected)
-    console.log(card.color + ' ' + card.shape + ' ' + card.fill)
+  onCardClick = () => {
+    console.log(this.state.color + ' ' + this.state.shape + ' ' + this.state.fill)
+    console.log('MY INDEX: ' + this.state.cardIndex)
     this.setState({
       selected: !this.state.selected
     }, () => {
-      console.log(this.state.selected)
+      this.props.changeSelected(this.state.cardIndex, this.state.selected)
     })
   }
   cardStyle = () => {
-    console.log('Changing card style based on ' + this.state.selected)
     return !this.state.selected ? [styles.row, styles.rowUnselected] : [styles.rowSelected, styles.row]
   }
 
   render() {
     return (
-      <TouchableOpacity activeOpacity={0.5} onPress={() => this.onCardClick(this.state.card)}>
+      <TouchableOpacity activeOpacity={0.5} onPress={() => this.onCardClick()}>
         <View style={this.cardStyle()}>
           <Svg
             height="110"
             width="110"
           >
-          {this.generateCardImage(this.state.card)}
+          {this.generateCardImage()}
           </Svg>
         </View>
       </TouchableOpacity>

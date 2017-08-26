@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import * as set from '../../utils/set';
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
-  ListView,
-  TouchableHighlight,
   Button
 } from 'react-native';
 
@@ -15,55 +14,73 @@ import Card from './Card';
 export default class Game extends Component {
   constructor() {
     super();
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.changeSelectedCards = this.changeSelectedCards.bind(this)
     this.state = {
-      cardsDataSource: ds,
-      cards: []
+      cards: [],
+      selectedCards: []
     };
   }
   componentDidMount() {
-    this.generateRandomCards();
+    this.generateFirstCards();
   }
-  generateRandomCards() {
-    let cards = [];
-    const colors = ['rgba(52, 152, 219, 1.0)', 'rgba(231, 76, 60, 1.0)', 'rgba(241, 196, 15, 1.0)'];
-    const shapes = ['circle', 'rectangle', 'triangle'];
-    const fills = ['full', 'striped', 'empty'];
-
-    for (let i = 1; i <= 9; i++) {
-      let card = {
-        color: colors[_.random(0, 2)],
-        shape: shapes[_.random(0, 2)],
-        fill: fills[_.random(0, 2)],
-      }
-      cards.push(card);
-    }
-
+  generateFirstCards() {
     this.setState({
-      cards: cards,
-      cardsDataSource: this.state.cardsDataSource.cloneWithRows(cards)
+      cards: set.generateCards(9)
     });
   }
-
-  renderRow(card, sectionId, rowId, highlightRow) {
-    return (
-      <Card card={card}/>
-    )
+  renderCards() {
+    return this.state.cards.map((card, index) => {
+      return (
+        <Card key={card.shape + card.color + card.fill + index} shape={card.shape} color={card.color} fill={card.fill} cardIndex={index} changeSelected={this.changeSelectedCards}/>
+      )
+    })
+  }
+  changeSelectedCards(index, isSelected) {
+    let selected = this.state.selectedCards
+    if(isSelected) {
+      selected.push(index)
+    } else {
+      selected.splice(selected.indexOf(index), 1)
+    }
+    this.setState({
+      selectedCards: selected
+    }, () => {
+      if(this.state.selectedCards.length == 3) {
+        if(this.checkSet()) {
+          this.removeCards()
+        } else {
+          this.setState({
+            selectedCards: []
+          })
+        }
+      }
+    })
+  }
+  removeCards() {
+    let newCards = this.state.cards
+    for(let card in this.state.selectedCards) {
+      newCards[this.state.selectedCards[card]] = set.generateCards(1)[0]
+    }
+    this.setState({
+      cards: newCards,
+      selectedCards: []
+    })
+  }
+  checkSet() {
+    return set.isSet(this.state.cards, this.state.selectedCards)
   }
   render() {
     return (
       <View >
-        <ListView
-          contentContainerStyle={styles.cardContainer}
-          dataSource={this.state.cardsDataSource}
-          renderRow={this.renderRow.bind(this)}
-        />
+        <View style={styles.cardContainer}>
+          {this.renderCards()}
+        </View>
         <Button
-          onPress={this.generateRandomCards}
+          onPress={() => this.checkSet()}
           title="Generate"
         />
       </View>
-    );
+    )
   }
 }
 
