@@ -19,7 +19,8 @@ export default class Game extends Component {
       cards: [],
       selectedCards: [],
       sets: [],
-      score: 0
+      score: 0,
+      gameState: 'stopped'
     };
   }
   componentDidMount() {
@@ -39,8 +40,10 @@ export default class Game extends Component {
   }
   renderCards() {
     return this.state.cards.map((card, index) => {
+      let selected = this.state.selectedCards.includes(index) ? true : false
+      console.log('Selected is ' + selected)
       return (
-        <Card key={card.shape + card.color + card.fill + index} shape={card.shape} color={card.color} fill={card.fill} cardIndex={index} changeSelected={this.changeSelectedCards}/>
+        <Card key={card.shape + card.color + card.fill + index} selected={selected} shape={card.shape} color={card.color} fill={card.fill} cardIndex={index} changeSelected={this.changeSelectedCards}/>
       )
     })
   }
@@ -54,6 +57,7 @@ export default class Game extends Component {
     this.setState({
       selectedCards: selected
     }, () => {
+      console.log('Current selected cards: ' + this.state.selectedCards)
       if(this.state.selectedCards.length == 3) {
         if(this.checkSet()) {
           this.removeCards()

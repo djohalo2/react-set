@@ -13,7 +13,7 @@ export default class ReactSet extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
-          REACT NATIVE SET
+          REACT NATIVE SET!
         </Text>
         <Game />
       </View>

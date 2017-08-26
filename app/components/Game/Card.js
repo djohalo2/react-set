@@ -32,7 +32,8 @@ export default class Card extends Component {
       shape: this.props.shape,
       color: this.props.color,
       fill: this.props.fill,
-      cardIndex: this.props.cardIndex
+      cardIndex: this.props.cardIndex,
+      selected: this.props.selected
     })
   }
   generateCardImage() {
@@ -52,15 +53,11 @@ export default class Card extends Component {
   }
   onCardClick = () => {
     console.log(this.state.color + ' ' + this.state.shape + ' ' + this.state.fill)
-    console.log('MY INDEX: ' + this.state.cardIndex)
-    this.setState({
-      selected: !this.state.selected
-    }, () => {
-      this.props.changeSelected(this.state.cardIndex, this.state.selected)
-    })
+    console.log('Current card selected state: ' + this.state.selected)
+    this.props.changeSelected(this.state.cardIndex, !this.props.selected)
   }
   cardStyle = () => {
-    return !this.state.selected ? [styles.row, styles.rowUnselected] : [styles.rowSelected, styles.row]
+    return !this.props.selected ? [styles.row, styles.rowUnselected] : [styles.rowSelected, styles.row]
   }
 
   render() {
