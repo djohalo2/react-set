@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Text,
   View,
-  Button
+  Button,
+  AsyncStorage
 } from 'react-native';
 
 import Card from './Card';
@@ -27,23 +28,21 @@ export default class Game extends Component {
       sets: [],
       score: 0,
       gameState: 'playing',
-      time: 10
+      time: 120,
+      highScore: 0
     };
     this.baseState = this.state
   }
   componentDidMount() {
     this.generateFirstCards()
     this.startTimer()
+    this.getHighScore()
   }
   restartGame() {
-    console.log('Restarting game...')
     this.setState(this.baseState)
     this.generateFirstCards()
-    this.setState({
-      selectedCards: []
-    })
+    this.setState({selectedCards: []})
     this.startTimer()
-    console.log('Selected cards: ' + this.state.selectedCards)
   }
   generateFirstCards = () => {
     let cards = []
@@ -95,7 +94,6 @@ export default class Game extends Component {
       for(let card in this.state.selectedCards) {
         newCards[this.state.selectedCards[card]] = set.generateCards(1)[0]
       }
-      console.log(set.getAllSets(newCards))
     }
     while (set.getAllSets(newCards).length < 1)
     this.setState({
@@ -120,6 +118,12 @@ export default class Game extends Component {
     this.setState({
       gameState: 'stopped'
     })
+    console.log('Attempting highscore update...')
+    console.log('Current highscore in state ' + this.state.highScore)
+    if(this.state.highScore == null || this.state.highScore < this.state.score) {
+      console.log('Highscore changed to ' + this.state.score)
+      this.setHighScore(this.state.score)
+    }
   }
   checkSet() {
     return set.isSet(this.state.cards, this.state.selectedCards)
@@ -127,9 +131,19 @@ export default class Game extends Component {
   isModalVisible() {
     return this.state.gameState == 'stopped' ? true : false
   }
-
+  setHighScore(score) {
+    AsyncStorage.setItem('highscore', score.toString());
+  }
+  getHighScore() {
+    AsyncStorage.getItem('highscore').then((value) => {
+      console.log('Retrieved highscore is ' + value)
+      if(value == null) {
+        value = 0
+      }
+      this.setState({highScore: parseInt(value)})
+    })
+  }
   resetStack() {
-    console.log('Resetting stack...')
     const resetAction = NavigationActions.reset({
       index: 0,
       actions: [
@@ -151,6 +165,9 @@ export default class Game extends Component {
           <Text style={styles.score}>
             Score: {this.state.score}
           </Text>
+          <Text style={styles.score}>
+            Highscore: {this.state.highScore}
+          </Text>
           <Text style={styles.timer}>
             Time: {this.state.time}
           </Text>
@@ -161,11 +178,13 @@ export default class Game extends Component {
         <Text style={styles.setCount}>
           Available sets: {this.state.sets.length}
         </Text>
-        <Button
-          onPress={() => this.resetStack()}
-          title="STOP"
-          color="#e74c3c"
-        />
+        <View style={styles.quitButton}>
+          <Button
+            onPress={() => this.resetStack()}
+            title="QUIT"
+            color="#e74c3c"
+          />
+        </View>
       </View>
     )
   }
@@ -173,7 +192,8 @@ export default class Game extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0D1B2A'
+    backgroundColor: '#0D1B2A',
+    flex: 1
   },
   title: {
     fontSize: 20,
@@ -206,6 +226,9 @@ const styles = StyleSheet.create({
   },
   topTextContainer: {
     flexDirection: 'row'
+  },
+  quitButton: {
+    margin: 20
   }
 });
 
