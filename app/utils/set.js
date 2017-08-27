@@ -13,6 +13,7 @@ export function generateCards(amount) {
       shape: shapes[_.random(0, 2)],
       fill: fills[_.random(0, 2)],
     }
+    console.log(_.includes(cards, 'blue'))
     cards.push(card)
   }
   return cards

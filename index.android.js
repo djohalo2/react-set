@@ -6,33 +6,18 @@ import {
   View
 } from 'react-native';
 
-import Game from './app/components/Game/Game';
+import { Router } from './app/router';
 
 export default class ReactSet extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>
-          REACT NATIVE SET!
-        </Text>
-        <Game />
-      </View>
+      <Router />
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#0D1B2A'
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 30,
-    color: '#fff',
-    textAlign: 'center'
-  }
+
 });
 
 AppRegistry.registerComponent('ReactSet', () => ReactSet);

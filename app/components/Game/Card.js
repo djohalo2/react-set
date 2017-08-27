@@ -52,8 +52,6 @@ export default class Card extends Component {
     }
   }
   onCardClick = () => {
-    console.log(this.state.color + ' ' + this.state.shape + ' ' + this.state.fill)
-    console.log('Current card selected state: ' + this.state.selected)
     this.props.changeSelected(this.state.cardIndex, !this.props.selected)
   }
   cardStyle = () => {

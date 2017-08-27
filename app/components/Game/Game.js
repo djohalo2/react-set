@@ -10,27 +10,44 @@ import {
 } from 'react-native';
 
 import Card from './Card';
+import GameOver from './GameOver'
 
 export default class Game extends Component {
+  static navigationOptions = {
+    header: null,
+  };
   constructor() {
     super();
     this.changeSelectedCards = this.changeSelectedCards.bind(this)
+    this.restartGame = this.restartGame.bind(this)
     this.state = {
       cards: [],
       selectedCards: [],
       sets: [],
       score: 0,
-      gameState: 'stopped'
+      gameState: 'playing',
+      time: 10
     };
+    this.baseState = this.state
   }
   componentDidMount() {
-    this.generateFirstCards();
+    this.generateFirstCards()
+    this.timer()
   }
-  generateFirstCards() {
+  restartGame() {
+    console.log('Restarting game...')
+    this.setState(this.baseState)
+    this.generateFirstCards()
+    this.setState({
+      selectedCards: []
+    })
+    this.timer()
+    console.log('Selected cards: ' + this.state.selectedCards)
+  }
+  generateFirstCards = () => {
     let cards = []
     do {
       cards = set.generateCards(9)
-      console.log(set.getAllSets(cards))
     }
     while (set.getAllSets(cards).length < 1)
     this.setState({
@@ -41,7 +58,6 @@ export default class Game extends Component {
   renderCards() {
     return this.state.cards.map((card, index) => {
       let selected = this.state.selectedCards.includes(index) ? true : false
-      console.log('Selected is ' + selected)
       return (
         <Card key={card.shape + card.color + card.fill + index} selected={selected} shape={card.shape} color={card.color} fill={card.fill} cardIndex={index} changeSelected={this.changeSelectedCards}/>
       )
@@ -57,7 +73,6 @@ export default class Game extends Component {
     this.setState({
       selectedCards: selected
     }, () => {
-      console.log('Current selected cards: ' + this.state.selectedCards)
       if(this.state.selectedCards.length == 3) {
         if(this.checkSet()) {
           this.removeCards()
@@ -87,15 +102,41 @@ export default class Game extends Component {
       sets: set.getAllSets(newCards)
     })
   }
+  timer() {
+    let timer = setInterval(() => {
+      if(this.state.gameState == 'playing' && this.state.time > 0) {
+        this.setState({
+          time: this.state.time - 1
+        })
+      } else {
+        clearInterval(timer);
+        this.setState({
+          gameState: 'stopped'
+        })
+      }
+    }, 1000);
+  }
   checkSet() {
     return set.isSet(this.state.cards, this.state.selectedCards)
   }
+  isModalVisible() {
+    return this.state.gameState == 'stopped' ? true : false
+  }
   render() {
     return (
-      <View >
-        <Text style={styles.score}>
-          Score: {this.state.score}
+      <View style={styles.container}>
+        <Text style={styles.title}>
+          REACT NATIVE SET!
         </Text>
+        <GameOver modalVisible={this.isModalVisible()} restartGame={this.restartGame}/>
+        <View style={styles.topTextContainer}>
+          <Text style={styles.score}>
+            Score: {this.state.score}
+          </Text>
+          <Text style={styles.timer}>
+            Time: {this.state.time}
+          </Text>
+        </View>
         <View style={styles.cardContainer}>
           {this.renderCards()}
         </View>
@@ -103,8 +144,8 @@ export default class Game extends Component {
           Available sets: {this.state.sets.length}
         </Text>
         <Button
-          onPress={() => this.checkSet()}
-          title="Generate"
+          onPress={() => this.props.navigation.navigate('Menu')}
+          title="STOP"
         />
       </View>
     )
@@ -112,6 +153,17 @@ export default class Game extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#0D1B2A'
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 30,
+    color: '#fff',
+    textAlign: 'center'
+  },
   cardContainer: {
     flexDirection:'row',
     flexWrap: 'wrap',
@@ -121,11 +173,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginRight: 5,
     textAlign: 'center',
-    marginBottom: 50
+    marginBottom: 40
   },
   score: {
     color: '#fff',
-    margin: 5
+    margin: 5,
+    flex: 0.9
+  },
+  timer: {
+    color: '#fff',
+    margin: 5,
+    textAlign: 'right'
+  },
+  topTextContainer: {
+    flexDirection: 'row'
   }
 });
 
