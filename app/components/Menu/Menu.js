@@ -19,6 +19,7 @@ export default class Menu extends Component {
             this.props.navigation.navigate('Game')
           }
           title="PLAY"
+          color="#e74c3c"
         />
       </View>
     );

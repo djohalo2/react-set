@@ -13,10 +13,12 @@ export default class ReactSet extends Component {
   render() {
     return (
       <View>
-        <Modal isVisible={this.props.modalVisible}>
+        <Modal isVisible={this.props.modalVisible} backdropOpacity={0.8}>
           <View style={styles.modalContainer}>
             <Text style={styles.title}>GAME OVER</Text>
+            <Text style={[styles.title, styles.score]}>{this.props.score}</Text>
             <Button
+              color="#e74c3c"
               onPress={() => {
                   this.props.restartGame()
                 }
@@ -34,13 +36,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     color: '#fff',
-    margin: 20,
+    margin: 15,
     fontWeight: 'bold',
     textAlign: 'center'
   },
   modalContainer: {
     flex: 1,
     marginTop: 50
+  },
+  score: {
+    fontSize: 50,
+    margin: 15
   }
 });
 

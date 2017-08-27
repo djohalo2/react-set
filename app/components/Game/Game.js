@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import * as set from '../../utils/set';
+import { NavigationActions } from 'react-navigation'
 import {
   AppRegistry,
   StyleSheet,
@@ -32,7 +33,7 @@ export default class Game extends Component {
   }
   componentDidMount() {
     this.generateFirstCards()
-    this.timer()
+    this.startTimer()
   }
   restartGame() {
     console.log('Restarting game...')
@@ -41,7 +42,7 @@ export default class Game extends Component {
     this.setState({
       selectedCards: []
     })
-    this.timer()
+    this.startTimer()
     console.log('Selected cards: ' + this.state.selectedCards)
   }
   generateFirstCards = () => {
@@ -77,7 +78,8 @@ export default class Game extends Component {
         if(this.checkSet()) {
           this.removeCards()
           this.setState({
-            score: this.state.score + 1
+            score: this.state.score + 1,
+            time: this.state.time + 5
           })
         } else {
           this.setState({
@@ -102,19 +104,22 @@ export default class Game extends Component {
       sets: set.getAllSets(newCards)
     })
   }
-  timer() {
-    let timer = setInterval(() => {
+  startTimer() {
+    this.timer = setInterval(() => {
       if(this.state.gameState == 'playing' && this.state.time > 0) {
         this.setState({
           time: this.state.time - 1
         })
       } else {
-        clearInterval(timer);
-        this.setState({
-          gameState: 'stopped'
-        })
+        this.stopGame()
       }
     }, 1000);
+  }
+  stopGame() {
+    clearInterval(this.timer);
+    this.setState({
+      gameState: 'stopped'
+    })
   }
   checkSet() {
     return set.isSet(this.state.cards, this.state.selectedCards)
@@ -122,13 +127,26 @@ export default class Game extends Component {
   isModalVisible() {
     return this.state.gameState == 'stopped' ? true : false
   }
+
+  resetStack() {
+    console.log('Resetting stack...')
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Menu'})
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
+    this.stopGame()
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
           REACT NATIVE SET!
         </Text>
-        <GameOver modalVisible={this.isModalVisible()} restartGame={this.restartGame}/>
+        <GameOver modalVisible={this.isModalVisible()} restartGame={this.restartGame} score={this.state.score}/>
         <View style={styles.topTextContainer}>
           <Text style={styles.score}>
             Score: {this.state.score}
@@ -144,8 +162,9 @@ export default class Game extends Component {
           Available sets: {this.state.sets.length}
         </Text>
         <Button
-          onPress={() => this.props.navigation.navigate('Menu')}
+          onPress={() => this.resetStack()}
           title="STOP"
+          color="#e74c3c"
         />
       </View>
     )
